@@ -32,7 +32,7 @@ draw call 的状态组织部分在 `core/scene.cpp` 里的 `render()`，而填�
 
 `image/` 负责帧缓冲和 TGA 图像。
 
-`io/` 负责加载外部的 `.obj` 模型文件。
+`obj_loader/` 负责加载外部的 `.obj` 模型文件。
 
 ### 杂项
 #### 坐标系约定

@@ -11,7 +11,7 @@
 #include "core/scene.h"
 #include "image/framebuffer.h"
 #include "image/image.h"
-#include "io/obj_loader.h"
+#include "obj_loader/obj_loader.h"
 #include "math/transform.h"
 #include "shaders/builtin.h"
 

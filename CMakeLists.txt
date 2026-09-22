@@ -17,7 +17,7 @@ add_library(tdsg STATIC
   src/image/framebuffer.cpp
   src/core/rasterizer.cpp
   src/core/scene.cpp
-  src/io/obj_loader.cpp
+  src/obj_loader/obj_loader.cpp
 )
 
 target_include_directories(tdsg PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
