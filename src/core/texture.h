@@ -29,11 +29,25 @@ public:
         const float fx = uv.x * w - 0.5f;
         const float fy = (1.0f - uv.y) * h - 0.5f;
 
-        if (filter == Filter::Nearest) {
-            return image_.get(wrap_index(static_cast<int>(std::floor(fx + 0.5f)), width()),
-                              wrap_index(static_cast<int>(std::floor(fy + 0.5f)), height()));
+        switch (filter) {
+            case Filter::Nearest:  return nearest_sample(fx, fy);
+            case Filter::Bilinear: return bilinear_sample(fx, fy);
         }
+        return bilinear_sample(fx, fy);
+    }
 
+    Color texel(int x, int y) const { return image_.get(x, y); }
+
+    Wrap wrap = Wrap::Repeat;
+    Filter filter = Filter::Bilinear;
+
+private:
+    Color nearest_sample(float fx, float fy) const {
+        return image_.get(wrap_index(static_cast<int>(std::floor(fx + 0.5f)), width()),
+                          wrap_index(static_cast<int>(std::floor(fy + 0.5f)), height()));
+    }
+
+    Color bilinear_sample(float fx, float fy) const {
         const int x0 = static_cast<int>(std::floor(fx));
         const int y0 = static_cast<int>(std::floor(fy));
         const float tx = fx - static_cast<float>(x0);
@@ -49,17 +63,22 @@ public:
         return top * (1.0f - ty) + bottom * ty;
     }
 
-    Color texel(int x, int y) const { return image_.get(x, y); }
-
-    Wrap wrap = Wrap::Repeat;
-    Filter filter = Filter::Bilinear;
-
-private:
     int wrap_index(int i, int n) const {
         if (n <= 0) return 0;
-        if (wrap == Wrap::Clamp) return i < 0 ? 0 : (i >= n ? n - 1 : i);
+        switch (wrap) {
+            case Wrap::Repeat: return wrap_repeat(i, n);
+            case Wrap::Clamp:  return wrap_clamp(i, n);
+        }
+        return i;
+    }
+
+    static int wrap_repeat(int i, int n) {
         i %= n;
         return i < 0 ? i + n : i;
+    }
+
+    static int wrap_clamp(int i, int n) {
+        return i < 0 ? 0 : (i >= n ? n - 1 : i);
     }
 
     Image image_;
